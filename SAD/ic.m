@@ -4,7 +4,7 @@
 %  Error vs true GMST: < 0.9 s of arc — negligible for CubeSat work.
 
 % ---- Simulation epoch (UTC) -------------------------------------------
-utc0 = [2026 02 09 00 00 00];   % [Y M D h m s]
+utc0 = [2000 01 01 12 00 00];   % [Y M D h m s]
 
 % ---- Gregorian -> Julian Date ----------------------------------------
 Y  = utc0(1);  Mo = utc0(2);  D  = utc0(3);
@@ -24,14 +24,6 @@ JD_UTC = floor(365.25 * (Y + 4716)) ...
        + (h + mi/60 + s/3600) / 24;
 
 % ---- GMST (Astronomical Almanac / Vallado) ----------------------------
-%  θ_GMST = 280.46061837°
-%         + 360.98564736629 * (JD - J2000)
-%         + 0.000387933 * T²
-%         - T³ / 38710000
-%
-%  where T = Julian centuries of UTC from J2000.
-%  The linear term absorbs both the sidereal-day conversion and the
-%  fractional-day contribution, so no separate 0h-UT1 split is needed.
 
 JD_J2000 = 2451545.0;
 T_UTC    = (JD_UTC - JD_J2000) / 36525.0;
@@ -55,7 +47,7 @@ gmst0_rad = gmst0_deg * (pi / 180);       % [rad], in [0, 2π)
 % --- Attitude ---
 w0 = [0; 0; 0];                                      % [rad/s]
 q0 = [0.989288; 0.094060; 0.078926; 0.094060];       % [n.u.] scalar-first
-% q0 = [1; 0; 0; 0];
+q0 = [1; 0; 0; 0];
 q0 = q0 / norm(q0);                                  % enforce unit quaternion
 
 % --- Orbit (ECI, two-body) ---
