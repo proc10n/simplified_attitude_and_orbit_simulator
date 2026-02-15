@@ -50,25 +50,63 @@ q0 = [0.989288; 0.094060; 0.078926; 0.094060];       % [n.u.] scalar-first
 q0 = [1; 0; 0; 0];
 q0 = q0 / norm(q0);                                  % enforce unit quaternion
 
-% --- Orbit (ECI, two-body) ---
-% Convention:
-%   r0_I, v0_I are expressed in inertial frame I (ECI), SI units.
-%   Use one active case below via orbit.ic = orbit.test.<name>.
+% -----------------------------
+% Orbit
+% -----------------------------
+orb.KOE.RE    = 6378;                        % Earth radius [km]
+orb.KOE.a     = orb.KOE.RE + 500;            % Semi-major axis [km]
+orb.KOE.e     = 0.0;                         % Eccentricity
+orb.KOE.i     = deg2rad(98.4);               % Inclination [rad]
+orb.KOE.RAAN  = deg2rad(62.6);               % RAAN [rad]
+orb.KOE.w     = deg2rad(93.0);               % Argument of perigee [rad]
+orb.KOE.v0    = deg2rad(100.0);              % True anomaly at epoch [rad]
 
-% ============================================================
-% Orbit test presets
-% ============================================================
+muEarth = 398600.4418;                       % [km^3/s^2]
 
-% 1) LEO circular equatorial, h = 500 km
-orbit.test.LEO500_circ_eq.r0_I = [6878137.0; 0.0; 0.0];                 % [m]
-orbit.test.LEO500_circ_eq.v0_I = [0.0; 7612.608173; 0.0];               % [m/s]
-orbit.test.LEO500_circ_eq.note = 'e~0, i~0 deg, T~94.62 min';
+% Convert KOE -> ECI
+[r0_I, v0_I] = koe2eci( ...
+    orb.KOE.a, orb.KOE.e, orb.KOE.i, ...
+    orb.KOE.RAAN, orb.KOE.w, orb.KOE.v0, muEarth);
 
-% ============================================================
-% Active orbit initial condition (pick one)
-% ============================================================
-orbit.ic = orbit.test.LEO500_circ_eq;
+r0_I = r0_I * 1e3;
+v0_I = v0_I * 1e3;
 
-% Export active IC to variables used by Simulink
-r0_I = orbit.ic.r0_I;    % [m]
-v0_I = orbit.ic.v0_I;    % [m/s]
+% Display
+fprintf('r_ECI [m]   = [%.6f, %.6f, %.6f]\n', r0_I(1), r0_I(2), r0_I(3));
+fprintf('v_ECI [m/s] = [%.6f, %.6f, %.6f]\n', v0_I(1), v0_I(2), v0_I(3));
+
+% ------------------------------------------------------------
+% Local function: Classical orbital elements to ECI state
+% ------------------------------------------------------------
+function [r_eci, v_eci] = koe2eci(a, e, i, RAAN, w, v, mu)
+    % Semi-latus rectum
+    p = a * (1 - e^2);
+
+    % Radius magnitude
+    r = p / (1 + e*cos(v));
+
+    % State in perifocal frame (PQW)
+    r_pqw = [r*cos(v); r*sin(v); 0];
+    v_pqw = sqrt(mu/p) * [-sin(v); e + cos(v); 0];
+
+    % Rotation PQW -> ECI: R3(RAAN)*R1(i)*R3(w)
+    Q_pqw_to_eci = R3(RAAN) * R1(i) * R3(w);
+
+    % ECI vectors
+    r_eci = Q_pqw_to_eci * r_pqw;
+    v_eci = Q_pqw_to_eci * v_pqw;
+end
+
+function R = R1(theta)
+    c = cos(theta); s = sin(theta);
+    R = [1  0  0;
+         0  c -s;
+         0  s  c];
+end
+
+function R = R3(theta)
+    c = cos(theta); s = sin(theta);
+    R = [ c -s  0;
+          s  c  0;
+          0  0  1];
+end
