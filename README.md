@@ -51,4 +51,4 @@ run main.m
 
 ## Notes
 
-This is a work-in-progress, personal/academic project. Parameters are mostly placeholder values.
+This WIP, and mostly personal/academic. Parameters are mostly placeholder values.
