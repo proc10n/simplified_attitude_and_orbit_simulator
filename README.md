@@ -18,7 +18,7 @@ Default scenario: 500 km circular, sun-synchronous orbit (i ≈ 98.4°) with a g
 
 ## Requirements
 
-- MATLAB (R2023b or later recommended)
+- MATLAB (R2025a or later recommended)
 - Simulink
 - Aerospace Toolbox *(if using built-in environment blocks)*
 
@@ -51,4 +51,4 @@ run main.m
 
 ## Notes
 
-This WIP, and mostly personal/academic. Parameters are mostly placeholder values.
+This is WIP, and mostly personal/academic. Parameters are mostly placeholder values.
