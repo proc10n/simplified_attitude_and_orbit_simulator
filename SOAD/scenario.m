@@ -15,10 +15,12 @@ trgt_ecef = [(N+h)*cos(lat)*cos(lon);
 % ---- Simulation epoch (UTC) -------------------------------------------
 utc0 = [2000 01 01 12 00 00];          % [Y M D h m s]
 
-orb.KOE.RE    = 6378;                        % Earth radius [km]
-orb.KOE.a     = orb.KOE.RE + 500;            % Semi-major axis [km]
-orb.KOE.e     = 0.0;                         % Eccentricity
-orb.KOE.i     = deg2rad(98.4);               % Inclination [rad]
-orb.KOE.RAAN  = deg2rad(62.6);               % RAAN [rad]
-orb.KOE.w     = deg2rad(93.0);               % Argument of perigee [rad]
-orb.KOE.v0    = deg2rad(100.0);              % True anomaly at epoch [rad]
+orb.RE    = 6378;                        % Earth radius [km]
+orb.a     = orb.RE + 500;                % Semi-major axis [km]
+orb.e     = 0.0;                         % Eccentricity
+orb.i     = deg2rad(98.4);               % Inclination [rad]
+orb.RAAN  = deg2rad(62.6);               % RAAN [rad]
+orb.w     = deg2rad(93.0);               % Argument of perigee [rad]
+orb.v0    = deg2rad(100.0);              % True anomaly at epoch [rad]
+
+orb.n     = [-sin(orb.i)*sin(orb.w); sin(orb.i)*cos(orb.w); cos(orb.i)];

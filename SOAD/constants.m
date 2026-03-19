@@ -36,5 +36,13 @@ earth.J4  = -earth.C40;          % -1.61962159136700e-6
 earth.g0   = 9.80665;            % [m/s^2] standard gravity
 earth.mass = 5.97216787e24;      % [kg]
 
+% --- Sun ---
+
+sun.solar_const = 1361;          % [W/m^2] solar constant
+
+% --- Physics ---
+
+const.c = 299792458;             % [m/s] speed of light
+
 
 
