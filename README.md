@@ -1,26 +1,27 @@
 # Simplified Orbit and Attitude Simulator
 
-A MATLAB/Simulink-based simulator for spacecraft orbit propagation and attitude dynamics. Built around a 6DOF model with coupled orbital and attitude subsystems.
+A MATLAB/Simulink-based simulator for spacecraft orbit propagation, attitude determination, and control. Built around a 6DOF model with coupled orbital and attitude subsystems.
 
 ## Overview
 
-The simulator models a satellite in low Earth orbit with the following capabilities:
+The simulator models a 1U CubeSat in low Earth orbit with the following capabilities:
 
-- **Orbital Dynamics**: Spherical gravity + J2 perturbation, Keplerian elements to ECI conversion
+- **Orbital Dynamics**: Spherical gravity + J2 perturbation
 - **Attitude Dynamics**: Rigid body dynamics with quaternion kinematics
-- **Control**: Quaternion-feedback PD controller
+- **Attitude Determination**: MEKF (gyro + magnetometer + sun sensor + star tracker), TRIAD, QUEST
+- **Control**: Quaternion-feedback PD controller, B-dot detumbling
 - **Trajectory Generation**: Inertial pointing, nadir pointing, target tracking
-- **Environmental Models**: NRLMSISE-00 (atmosphere), IGRF-14 (geomagnetic field), IAU-76 (ECI ↔ LLA)
-- **Estimation** *(implemented, not yet integrated)*: TRIAD, QUEST (static), MEKF (dynamic)
-- **Sensors**: Basic gyroscope model (bias + noise)
+- **Actuators**: Reaction wheels (DC motor model with PI speed loop), magnetorquers
+- **Sensors**: Gyroscope (ADXRS453), magnetometer (PNI RM3100), sun sensor (NSS AQUILA-D02), star tracker (arcsec Sagitta)
+- **Environment**: NRLMSISE-00 (atmosphere), IGRF-14 (geomagnetic field), IAU-76 (ECI ↔ LLA), cylindrical eclipse model
+- **Perturbations**: Gravity gradient, aerodynamic drag, solar radiation pressure, residual magnetic dipole
 
-Default scenario: 500 km circular, sun-synchronous orbit (i ≈ 98.4°) with a ground target at São Paulo.
+Default scenario: 1U CubeSat in a 500 km circular sun-synchronous orbit (i ≈ 98.4°) with a ground target at São Paulo.
 
 ## Requirements
 
-- MATLAB (R2025a or later recommended)
+- MATLAB R2025a or later
 - Simulink
-- Aerospace Toolbox *(if using built-in environment blocks)*
 
 ## Usage
 
@@ -28,27 +29,27 @@ Default scenario: 500 km circular, sun-synchronous orbit (i ≈ 98.4°) with a g
 run main.m
 ```
 
-`main.m` executes the setup scripts in order (`constants` → `params` → `scenario` → `ic`) and then runs the Simulink model.
+`main.m` executes the setup scripts (`constants` → `scenario` → `params` → `ic`) and runs the Simulink model.
 
 ## Structure
 
 | File / Folder | Description |
 |---|---|
 | `main.m` | Entry point |
-| `constants.m` | Earth parameters (WGS-84, EGM96 harmonics) |
-| `params.m` | Satellite inertia, actuator parameters, controller gains |
-| `scenario.m` | Orbit definition (KOE), ground target, epoch |
-| `ic.m` | Initial conditions (attitude quaternion, orbital state in ECI) |
+| `constants.m` | Physical and Earth parameters (WGS-84, EGM96 harmonics) |
+| `scenario.m` | Orbit definition (KOE), ground target, simulation epoch |
+| `params.m` | Satellite, actuator, sensor, and controller parameters |
+| `ic.m` | Initial conditions (attitude quaternion, orbital state) |
 | `model.slx` | Simulink model |
-| `utils/` | Auxiliary functions (time, coordinate transforms, GMST, etc.) |
+| `utils/` | Shared functions (coordinate transforms, quaternion math, time) |
+| `fsw/` | Flight software (estimation, control, guidance) |
 
 ## To Do
 
-- Magnetorquer model
-- Additional perturbations (drag, SRP, gravity gradient torque)
-- Sensor models (sun sensor, magnetometer, star tracker)
-- Integration of estimation algorithms into the control loop
+- Mission mode controller/selector logic
+- Momentum desaturation (magnetorquer-based)
+- Documentation
 
 ## Notes
 
-This is WIP, and mostly personal/academic. Parameters are mostly placeholder values.
+Work in progress. Hardware parameters are sourced from component datasheets where available (see comments in `params.m`).
