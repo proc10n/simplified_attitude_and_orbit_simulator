@@ -12,7 +12,7 @@ The simulator models a 1U CubeSat in low Earth orbit with the following capabili
 - **Control**: Quaternion-feedback PD controller, B-dot detumbling
 - **Trajectory Generation**: Inertial pointing, nadir pointing, target tracking
 - **Actuators**: Reaction wheels (DC motor model with PI speed loop), magnetorquers
-- **Sensors**: Gyroscope (ADXRS453), magnetometer (PNI RM3100), sun sensor (NSS AQUILA-D02), star tracker (arcsec Sagitta)
+- **Sensors**: Gyroscope, magnetometer, sun sensor, star tracker
 - **Environment**: NRLMSISE-00 (atmosphere), IGRF-14 (geomagnetic field), IAU-76 (ECI ↔ LLA), cylindrical eclipse model
 - **Perturbations**: Gravity gradient, aerodynamic drag, solar radiation pressure, residual magnetic dipole
 
@@ -22,6 +22,7 @@ Default scenario: 1U CubeSat in a 500 km circular sun-synchronous orbit (i ≈ 9
 
 - MATLAB R2025a or later
 - Simulink
+- Aerospace Toolbox
 
 ## Usage
 
@@ -52,4 +53,4 @@ run main.m
 
 ## Notes
 
-Work in progress. Hardware parameters are sourced from component datasheets where available (see comments in `params.m`).
+Work in progress, and mostly personal/academic/educational. Hardware parameters are sourced from component datasheets where available (see comments in `params.m`).
