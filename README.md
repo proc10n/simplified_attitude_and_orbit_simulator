@@ -50,6 +50,7 @@ run main.m
 - Mission mode controller/selector logic
 - Momentum desaturation (magnetorquer-based)
 - Documentation
+- Refactor a bunch of stuff
 
 ## Notes
 
