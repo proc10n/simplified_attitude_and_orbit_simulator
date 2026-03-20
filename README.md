@@ -1,6 +1,6 @@
 # Simplified Orbit and Attitude Simulator
 
-A MATLAB/Simulink-based simulator for spacecraft orbit propagation, attitude determination, and control. Built around a 6DOF model with coupled orbital and attitude subsystems.
+A MATLAB/Simulink-based simulator for spacecraft orbit propagation, attitude determination, and control. Built around a 6DOF model of a rigid body in space (a little 1U CubeSat).
 
 ## Overview
 
@@ -48,7 +48,6 @@ run main.m
 ## To Do
 
 - Mission mode controller/selector logic
-- Momentum desaturation (magnetorquer-based)
 - Documentation
 - Refactor a bunch of stuff
 
