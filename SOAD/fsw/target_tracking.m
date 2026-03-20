@@ -1,4 +1,4 @@
-function [q_trgt, w_trgt] = target_tracking(gmst_deg, trgt_ecef, pos_ECI, vel_ECI, omegaE)
+function [q_trgt, w_trgt] = target_tracking(gmst_deg, trgt_ecef, r_ECI, v_ECI, omegaE)
 
 % -------- ECEF -> ECI (from GMST) --------
 [trgt_eci, Cdot_ECI_ECEF] = ecef2eci(trgt_ecef, gmst_deg, omegaE);
