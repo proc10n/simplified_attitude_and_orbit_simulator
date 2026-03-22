@@ -32,7 +32,7 @@ run main.m
 
 `main.m` executes the setup scripts (`constants` → `scenario` → `params` → `ic`) and runs the Simulink model.
 
-## Structure
+## Structure (outdated)
 
 | File / Folder | Description |
 |---|---|
@@ -49,7 +49,7 @@ run main.m
 
 - Mission mode controller/selector logic
 - Documentation
-- Refactor a bunch of stuff
+- Update readme
 
 ## Notes
 
