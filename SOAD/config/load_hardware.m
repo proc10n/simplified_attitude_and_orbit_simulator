@@ -18,7 +18,7 @@ function hw = load_hardware()
 
     %% Satellite body
 
-    hw.sat.J     = diag([0.001, 0.001, 0.001]); % [kg*m^2] Inertia tensor
+    hw.sat.J     = diag([0.012, 0.009, 0.01]); % [kg*m^2] Inertia tensor
     hw.sat.J_inv = inv(hw.sat.J);
 
     hw.sat.rmd   = [0.01; 0.01; 0.01];          % [Am^2] Residual magnetic dipole
@@ -27,8 +27,9 @@ function hw = load_hardware()
     hw.sat.dim = 0.1;                            % [m]   Side length
     hw.sat.d   = hw.sat.dim / 2;                 % [m]   Half-side (CoP offset)
     hw.sat.Cd  = 2.2;                            % [-]   Drag coefficient
+    hw.sat.r_cm = [0.005; 0.003; -0.002];        % [m]   CoM offset from geometric center
 
-    % SRP optical properties (uniform for now)
+    % SRP optical properties
     hw.sat.cs = 0.1;                             % [-] Specular reflectivity
     hw.sat.cd = 0.1;                             % [-] Diffuse reflectivity
     hw.sat.ca = 0.8;                             % [-] Absorptivity
@@ -37,14 +38,15 @@ function hw = load_hardware()
     dim = hw.sat.dim;
     d   = hw.sat.d;
     fA  = dim^2;
+    r_cm = hw.sat.r_cm;
 
     hw.sat.faces = [
-         1  0  0   fA    d  0  0   hw.sat.cs  hw.sat.cd  hw.sat.ca;
-        -1  0  0   fA   -d  0  0   hw.sat.cs  hw.sat.cd  hw.sat.ca;
-         0  1  0   fA    0  d  0   hw.sat.cs  hw.sat.cd  hw.sat.ca;
-         0 -1  0   fA    0 -d  0   hw.sat.cs  hw.sat.cd  hw.sat.ca;
-         0  0  1   fA    0  0  d   hw.sat.cs  hw.sat.cd  hw.sat.ca;
-         0  0 -1   fA    0  0 -d   hw.sat.cs  hw.sat.cd  hw.sat.ca;
+         1  0  0   fA    d-r_cm(1)   -r_cm(2)    -r_cm(3)    hw.sat.cs  hw.sat.cd  hw.sat.ca;
+        -1  0  0   fA   -d-r_cm(1)   -r_cm(2)    -r_cm(3)    hw.sat.cs  hw.sat.cd  hw.sat.ca;
+         0  1  0   fA     -r_cm(1)   d-r_cm(2)   -r_cm(3)    hw.sat.cs  hw.sat.cd  hw.sat.ca;
+         0 -1  0   fA     -r_cm(1)  -d-r_cm(2)   -r_cm(3)    hw.sat.cs  hw.sat.cd  hw.sat.ca;
+         0  0  1   fA     -r_cm(1)   -r_cm(2)    d-r_cm(3)   hw.sat.cs  hw.sat.cd  hw.sat.ca;
+         0  0 -1   fA     -r_cm(1)   -r_cm(2)   -d-r_cm(3)   hw.sat.cs  hw.sat.cd  hw.sat.ca;
     ];
 
     %% DC Motor (Portescap 20ECF14 8B 32, 12V variant)
@@ -52,9 +54,9 @@ function hw = load_hardware()
     hw.rw.b  = 9.5e-7;                          % [Nm*s/rad] Viscous friction (estimated)
     hw.rw.Kt = 13.3e-3;                         % [Nm/A]     Torque constant
     hw.rw.Ke = 13.3e-3;                         % [V*s/rad]  Back-EMF constant
-    hw.rw.R  = 4.61;                             % [Ohm]      Resistance (phase-phase)
-    hw.rw.L  = 0.4e-3;                           % [H]        Inductance (phase-phase)
-    hw.rw.Jw = 5e-6;                             % [kg*m^2]   Rotor + RW inertia
+    hw.rw.R  = 4.61;                            % [Ohm]      Resistance (phase-phase)
+    hw.rw.L  = 0.4e-3;                          % [H]        Inductance (phase-phase)
+    hw.rw.Jw = 5e-6;                            % [kg*m^2]   Rotor + RW inertia
 
     %% Magnetorquer (NSS NCTR-M003)
 
@@ -87,13 +89,11 @@ function hw = load_hardware()
     hw.mag.bias        = [0; 0; 0];              % [T]   Sensor bias
     hw.mag.range       = 1100e-6;                % [T]   Measurement range (±1100 uT)
     hw.mag.cc          = 200;                    % [-]   Cycle count setting
-    hw.mag.fs          = 50;                     % [Hz]  Sample rate at CC=200
+    hw.mag.fs          = 1/0.05;                     % [Hz]  Sample rate at CC=200
     hw.mag.dt          = 1 / hw.mag.fs;          % [s]   Sample period
 
     %% Sun Sensor (NSS AQUILA-D02 / NFSS-411)
     %  Source: NSS Sun Sensor Datasheet (2024)
-    %  Notes: Fine sun sensor, slit-type (sapphire window).
-    %         Digital sun vector via RS-485. Accuracy over full 140 deg FOV.
 
     hw.ss.sigma_angle = 0.05 * pi/180;          % [rad] Angle noise (1-sigma, 0.2 deg RMS)
     hw.ss.fov_half    = 70 * pi/180;             % [rad] Half-angle FOV (140 deg total)
@@ -103,12 +103,9 @@ function hw = load_hardware()
 
     %% Star Tracker (arcsec Sagitta)
     %  Source: Sagitta Star Tracker Datasheet v2
-    %  Notes: Outputs quaternion (inertial-to-body).
-    %         Anisotropic noise: cross-boresight << around boresight.
-    %         Model: q_meas = q_true ⊗ dq(sigma_cross, sigma_cross, sigma_bore)
 
-    hw.st.sigma_cross  = 2 / 3600 * pi/180;     % [rad] Cross-boresight noise (1-sigma, 2 arcsec)
-    hw.st.sigma_bore   = 10 / 3600 * pi/180;    % [rad] Around-boresight noise (1-sigma, 10 arcsec)
+    hw.st.sigma_cross  = 2 / 3600 * pi/180;      % [rad] Cross-boresight noise (1-sigma, 2 arcsec)
+    hw.st.sigma_bore   = 10 / 3600 * pi/180;     % [rad] Around-boresight noise (1-sigma, 10 arcsec)
     hw.st.sun_excl     = 40 * pi/180;            % [rad] Sun exclusion angle (baffle)
     hw.st.earth_excl   = 25 * pi/180;            % [rad] Earth limb exclusion (typical)
     hw.st.boresight    = [0; 0; 1];              % [-]   Boresight direction in body frame

@@ -14,6 +14,14 @@ function scn = load_scenario(const)
 %           .orb        struct  Keplerian elements
 %           .trgt_ecef  [3x1]   Ground target in ECEF [m]
 
+    %% Scenario Selection
+
+    scn.type = [1; 3; 1]; % first position selects the scenario (individual controller or detumbling + pointing)
+                           % second position selects the control scenario (inertial, nadir, sun...)
+                           % third position selects the controller (PD, LQR, SMC...)
+                           
+    
+
     %% Simulation epoch (UTC)
 
     scn.utc0 = [2000 01 01 12 00 00];           % [Y M D h m s]

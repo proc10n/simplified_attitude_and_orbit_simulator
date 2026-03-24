@@ -18,6 +18,7 @@ ic    = load_ic(const, scn);
 %% Temporary 
 
 mekf_cfg = fsw.mekf_cfg; % Need this for now so mekf_compute works
+type = scn.type;         % Need this for now so mission_mode works
 
 %% Run simulation
 
