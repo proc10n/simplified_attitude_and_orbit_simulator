@@ -47,7 +47,7 @@ run main.m
 
 ## To Do
 
-- Mission mode controller/selector logic
+- Fix sun pointing mode
 - Documentation
 - Update readme
 
