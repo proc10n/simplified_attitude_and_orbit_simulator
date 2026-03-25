@@ -1,57 +1,35 @@
-function [q_sun, omega_sun] = sun_pointing(sun_eci, v_sun_eci, r_eci, v_eci, a_eci)
-% Computes desired attitude quaternion and angular velocity for sun pointing.
+function [q_sun, omega_sun] = sun_pointing(r_eci, sun_eci)
+% Computes desired attitude quaternion for sun pointing.
+% Uses eigen-axis rotation to align body-z with the sun direction.
+% Roll about the sun line is unconstrained; w_ref = 0 prevents drift.
 %
 % Inputs:
-%   sun_eci    [3x1] - Sun position in ECI [m]
-%   v_sun_eci  [3x1] - Sun velocity in ECI [m/s]
-%   r_eci      [3x1] - Spacecraft position in ECI [m]
-%   v_eci      [3x1] - Spacecraft velocity in ECI [m/s]
-%   a_eci      [3x1] - Spacecraft acceleration in ECI [m/s^2]
+%   sun_eci  [3x1] - Sun direction in ECI (unit vector)
+%   q_curr   [4x1] - Current attitude quaternion (ECI -> Body), scalar-first
 %
 % Outputs:
 %   q_sun      [4x1] - Desired quaternion (ECI -> Body), scalar-first
 %   omega_sun  [3x1] - Desired angular velocity in body frame [rad/s]
 
-    %% LOS vector (satellite -> sun)
-    rho      = sun_eci - r_eci;
-    rho_norm = norm(rho);
-    rho_dot  = v_sun_eci - v_eci;
+    rho = sun_eci - r_eci;
+    s   = rho / norm(rho);
+    b   = [0; 0; 1];
+    c   = dot(s, b);
 
-    %% Build basis vectors in ECI
-    % z-body = sun LOS direction
-    e3 = rho / rho_norm;
+    if c < -1 + 1e-8
+        q_sun = [0; 1; 0; 0];
+    elseif c > 1 - 1e-8
+        q_sun = [1; 0; 0; 0];
+    else
+        ax    = cross(s, b);
+        ax    = ax / norm(ax);
+        theta = acos(c);
+        q_sun = [cos(theta/2); sin(theta/2) * ax];
+    end
 
-    % y-body = LOS x LOS_dot
-    y_raw = cross(e3, rho_dot);
-    e2 = y_raw / norm(y_raw);
+    if q_sun(1) < 0
+        q_sun = -q_sun;
+    end
 
-    % x-body completes right-handed frame
-    e1 = cross(e2, e3);
-    e1 = e1 / norm(e1);
-
-    %% Quaternion
-    C = [e1'; e2'; e3'];
-    q_sun = dcm2quat(C);
-
-    %% Angular velocity via Cdot * C'
-
-    % Derivative of e3 (sun LOS unit vector)
-    de3 = (rho_dot - e3 * dot(e3, rho_dot)) / rho_norm;
-
-    % Derivative of rho_dot (a_sun ≈ 0)
-    rho_ddot = -a_eci;
-
-    % Derivative of y_raw = cross(e3, rho_dot)
-    dy_raw = cross(de3, rho_dot) + cross(e3, rho_ddot);
-    y_norm = norm(y_raw);
-    de2 = (dy_raw - e2 * dot(e2, dy_raw)) / y_norm;
-
-    % Derivative of e1 = e2 x e3
-    de1 = cross(de2, e3) + cross(e2, de3);
-
-    Cdot = [de1'; de2'; de3'];
-    S = Cdot * C';
-
-    omega_sun = [S(3,2); S(1,3); S(2,1)];
-
+    omega_sun = [0; 0; 0];
 end
