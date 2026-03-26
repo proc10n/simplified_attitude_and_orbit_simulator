@@ -1,5 +1,15 @@
 # Simplified Orbit and Attitude Simulator
 
+**Disclaimer (26/03/26):** I think the sim is in a good enough spot at the moment. It still has some rough edges, some stuff I vibe-coded with Claude because it was too boring, some new stuff too add (new controller, new estimators, orbit determination, etc.) but nothing really seems to be all that valueble at the moment.
+
+I initially made this sim simply because the one I used for university was tied to the CubeSat club I used to participate, so I wished to have something of my own (for projects, maybe papers eventually). They ended up being quite similar, though I think mine is more organized and runs better.
+
+Thing is, I'm at a point where I'm bottlenecked by my own knowledge of what an AOCS sim even needs to have. I can, for example, add J3+ purturbations or third body effects, but these would be so miniscule for the time horizon I'm using my sim for that it's pointless to do so. Should I change the sun ephemeris block for a hand coded algorithm taken from a book such as Meeus or Vallado? Maybe. But I'm not sure it is worthwhile. Likewise, I could add some new controller to the sim, like LQR or a Sliding Mode Controller, but my understanding is that, even though they do seem some use, the quaternion feedback "PD" law is more ubiquitous.
+
+Also, I'm not sure wheter "huge simulink block diagram" is the way to go anymore. It's nice to show to other people, but I keep using more and more MATLAB Function blocks.
+
+So I think I'll leave it like this for now. When I have a better idea of what to do next, I'll come back.
+
 MATLAB/Simulink 6DOF simulation of a 1U CubeSat ADCS. Models the full loop from orbit propagation through sensors, estimation, control, and actuation.
 
 Default scenario: 500 km sun-synchronous orbit, ground target at São Paulo.
