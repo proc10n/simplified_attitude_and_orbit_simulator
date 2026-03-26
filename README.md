@@ -1,28 +1,24 @@
-# Simplified Orbit and Attitude Simulator
+# SOAD — Simplified Orbit and Attitude Simulator
 
-A MATLAB/Simulink-based simulator for spacecraft orbit propagation, attitude determination, and control. Built around a 6DOF model of a rigid body in space (a little 1U CubeSat).
+MATLAB/Simulink 6DOF simulation of a 1U CubeSat ADCS. Models the full loop from orbit propagation through sensors, estimation, control, and actuation.
 
-## Overview
+Default scenario: 500 km sun-synchronous orbit, ground target at São Paulo.
 
-The simulator models a 1U CubeSat in low Earth orbit with the following capabilities:
+## What's in it
 
-- **Orbital Dynamics**: Spherical gravity + J2 perturbation
-- **Attitude Dynamics**: Rigid body dynamics with quaternion kinematics
-- **Attitude Determination**: MEKF (gyro + magnetometer + sun sensor + star tracker), TRIAD, QUEST
-- **Control**: Quaternion-feedback PD controller, B-dot detumbling
-- **Trajectory Generation**: Inertial pointing, nadir pointing, target tracking
-- **Actuators**: Reaction wheels (DC motor model with PI speed loop), magnetorquers
-- **Sensors**: Gyroscope, magnetometer, sun sensor, star tracker
-- **Environment**: NRLMSISE-00 (atmosphere), IGRF-14 (geomagnetic field), IAU-76 (ECI ↔ LLA), cylindrical eclipse model
-- **Perturbations**: Gravity gradient, aerodynamic drag, solar radiation pressure, residual magnetic dipole
-
-Default scenario: 1U CubeSat in a 500 km circular sun-synchronous orbit (i ≈ 98.4°) with a ground target at São Paulo.
+- **Orbit:** Two-body + J2
+- **Attitude dynamics:** Rigid body + quaternion kinematics. Perturbation torques: gravity gradient, aero drag, SRP, residual magnetic dipole
+- **Environment:** IGRF-14, NRLMSISE-00, IAU-76 frame conversions, cylindrical eclipse, solar ephemeris
+- **Sensors:** Gyro (ADXRS453), magnetometer (PNI RM3100), sun sensor (NSS AQUILA-D02), star tracker (arcsec Sagitta) — all parameterized from datasheets
+- **Estimation:** MEKF (gyro + mag + sun + star tracker), TRIAD, QUEST
+- **Trajectory generation:** Inertial, nadir, sun pointing, ground target tracking
+- **Control:** Quaternion-feedback PD, B-dot detumbling
+- **Actuators:** Reaction wheels (DC motor model, Portescap 20ECF14, PI speed loop) + magnetorquers (NSS NCTR-M003)
+- **Visualization:** VTS export (CIC OEM/AEM)
 
 ## Requirements
 
-- MATLAB R2025a or later
-- Simulink
-- Aerospace Toolbox
+MATLAB R2025a+, Simulink, Aerospace Toolbox
 
 ## Usage
 
@@ -30,27 +26,35 @@ Default scenario: 1U CubeSat in a 500 km circular sun-synchronous orbit (i ≈ 9
 run main.m
 ```
 
-`main.m` executes the setup scripts (`constants` → `scenario` → `params` → `ic`) and runs the Simulink model.
+## Structure
 
-## Structure (outdated)
+```
+soad/
+├── main.m                 Entry point
+├── export_vts.m           CIC OEM/AEM export for VTS
+├── model.slx              Simulink model
+├── config/
+│   ├── load_constants.m   Physical constants (WGS-84, EGM96)
+│   ├── load_scenario.m    Epoch, orbit elements, ground target
+│   ├── load_hardware.m    Satellite body, sensors, actuators
+│   ├── load_fsw.m         Controller gains, MEKF config, sim settings
+│   └── load_ic.m          Initial conditions from scenario
+├── fsw/
+│   ├── mekf.m             Multiplicative Extended Kalman Filter
+│   ├── triad.m            TRIAD determination
+│   ├── nadir_pointing.m   Nadir (LVLH) guidance
+│   ├── target_tracking.m  Ground target tracking guidance
+│   └── sun_pointing.m     Sun pointing (eigen-axis)
+└── utils/
+    ├── quat_mul.m, quat_err.m, quat2dcm.m, dcm2quat.m, skew_mat.m
+    ├── R1.m, R3.m
+    ├── koe2eci.m, ecef2eci.m
+    └── greg2jd.m, gmst.m
+```
 
-| File / Folder | Description |
-|---|---|
-| `main.m` | Entry point |
-| `constants.m` | Physical and Earth parameters (WGS-84, EGM96 harmonics) |
-| `scenario.m` | Orbit definition (KOE), ground target, simulation epoch |
-| `params.m` | Satellite, actuator, sensor, and controller parameters |
-| `ic.m` | Initial conditions (attitude quaternion, orbital state) |
-| `model.slx` | Simulink model |
-| `utils/` | Shared functions (coordinate transforms, quaternion math, time) |
-| `fsw/` | Flight software (estimation, control, guidance) |
+Config files are functions returning structs with explicit dependencies. Hardware params come from datasheets; FSW params are tuning knobs. See comments in each file for sources and units.
 
-## To Do
-
-- Fix sun pointing mode
-- Documentation
-- Update readme
 
 ## Notes
 
-Work in progress, and mostly personal/academic/educational. Hardware parameters are sourced from component datasheets where available (see comments in `params.m`).
+Work in progress — personal/academic project.
