@@ -42,9 +42,9 @@ soad/
 ├── fsw/
 │   ├── mekf.m             Multiplicative Extended Kalman Filter
 │   ├── triad.m            TRIAD determination
-│   ├── nadir_pointing.m   Nadir (LVLH) guidance
-│   ├── target_tracking.m  Ground target tracking guidance
-│   └── sun_pointing.m     Sun pointing (eigen-axis)
+│   ├── nadir_pointing.m   Nadir pointing
+│   ├── target_tracking.m  Ground target tracking
+│   └── sun_pointing.m     Sun pointing
 └── utils/
     ├── quat_mul.m, quat_err.m, quat2dcm.m, dcm2quat.m, skew_mat.m
     ├── R1.m, R3.m
