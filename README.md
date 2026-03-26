@@ -79,9 +79,4 @@ https://github.com/user-attachments/assets/fbc9a979-26e9-4426-9b4b-0f0f46871f7b
 
 ## Notes
 
-Config files are functions returning structs with explicit dependencies. Hardware params come from datasheets; FSW params are tuning knobs. See comments in each file for sources and units.
-
-
-## Notes
-
-Work in progress — personal/academic project.
+Work in progress. Personal/academic project.
