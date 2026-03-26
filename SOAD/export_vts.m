@@ -10,6 +10,9 @@
 %    ic.JD_UTC   - Julian Date at epoch (from load_ic)
 %
 %  Run this after the Simulink simulation completes.
+%
+%
+% Made with Claude <3
 
 %% ---- User settings ----
 

@@ -226,8 +226,8 @@ function [q0, P0, Q, R, R_st, B0] = kf_init(cfg, Ts)
     P0 = diag([cfg.P0_att  * ones(1,3), ...
                cfg.P0_bias * ones(1,3)]);
 
-    % Process noise                              % TODO: q_theta should be sigma_gyro^2 * Ts, not Ts^2
-    q_theta = (cfg.sigma_gyro^2)    * Ts^2 * ones(1,3);
+    % Process noise                              
+    q_theta = (cfg.sigma_gyro^2)    * Ts * ones(1,3);
     q_bias  = (cfg.sigma_bias_rw^2) * Ts   * ones(1,3);
 
     Q = diag([q_theta q_bias]);

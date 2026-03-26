@@ -16,7 +16,7 @@ function scn = load_scenario(const)
 
     %% Scenario Selection
 
-    scn.type = [2; 2; 1]; % first position selects the scenario (individual controller or detumbling + pointing)
+    scn.type = [1; 3; 1]; % first position selects the scenario (individual controller or detumbling + pointing)
                            % second position selects the control scenario (inertial, nadir, sun...)
                            % third position selects the controller (PD, LQR, SMC...)
                            

@@ -24,7 +24,7 @@ function fsw = load_fsw(hw)
 
     %% PD Controller
 
-    fsw.pd.w_n  = 0.08;                         % [rad/s] Natural frequency
+    fsw.pd.w_n  = 0.16;                         % [rad/s] Natural frequency
     fsw.pd.zeta = 0.707;                         % [-]     Damping ratio
 
     fsw.pd.Kp = 2 * fsw.pd.w_n^2 * hw.sat.J;              % Proportional gain
