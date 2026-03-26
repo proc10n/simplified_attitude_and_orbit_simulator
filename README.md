@@ -10,6 +10,8 @@ Also, I'm not sure wheter "huge simulink block diagram" is the way to go anymore
 
 So I think I'll leave it like this for now. When I have a better idea of what to do next, I'll come back.
 
+---
+
 MATLAB/Simulink 6DOF simulation of a 1U CubeSat ADCS. Models the full loop from orbit propagation through sensors, estimation, control, and actuation.
 
 Default scenario: 500 km sun-synchronous orbit, ground target at São Paulo.
