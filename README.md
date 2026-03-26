@@ -1,4 +1,4 @@
-# SOAD — Simplified Orbit and Attitude Simulator
+# Simplified Orbit and Attitude Simulator
 
 MATLAB/Simulink 6DOF simulation of a 1U CubeSat ADCS. Models the full loop from orbit propagation through sensors, estimation, control, and actuation.
 
