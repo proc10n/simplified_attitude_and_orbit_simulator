@@ -63,6 +63,22 @@ soad/
     ├── koe2eci.m, ecef2eci.m
     └── greg2jd.m, gmst.m
 ```
+## Examples
+
+1. Ground Target Tracking
+
+
+
+https://github.com/user-attachments/assets/17e2450d-faf1-47ba-bc4c-3cb7422f293d
+
+
+
+2. Nadir Pointing
+
+3. Sun Pointing
+
+
+
 
 Config files are functions returning structs with explicit dependencies. Hardware params come from datasheets; FSW params are tuning knobs. See comments in each file for sources and units.
 
