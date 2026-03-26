@@ -18,7 +18,7 @@ function hw = load_hardware()
 
     %% Satellite body
 
-    hw.sat.J     = diag([0.012, 0.009, 0.01]); % [kg*m^2] Inertia tensor
+    hw.sat.J     = diag([0.001, 0.001, 0.001]); % [kg*m^2] Inertia tensor
     hw.sat.J_inv = inv(hw.sat.J);
 
     hw.sat.rmd   = [0.01; 0.01; 0.01];          % [Am^2] Residual magnetic dipole

@@ -26,7 +26,7 @@ function ic = load_ic(const, scn)
 
     %% Attitude
 
-    ic.w0 = [0.01; 0.01; 0.01];                                       % [rad/s]
+    ic.w0 = [0.5; 0.5; 0.5];                                       % [rad/s]
 
     ic.q0 = [0.989288; 0.094060; 0.078926; 0.094060];              % scalar-first
     ic.q0 = ic.q0 / norm(ic.q0);                                   % enforce unit norm
