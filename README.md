@@ -67,18 +67,17 @@ soad/
 
 1. Ground Target Tracking
 
-
-
 https://github.com/user-attachments/assets/17e2450d-faf1-47ba-bc4c-3cb7422f293d
-
-
 
 2. Nadir Pointing
 
+https://github.com/user-attachments/assets/ab5ae276-bb23-49c4-9e57-d8ea0db3ccd7
+
 3. Sun Pointing
 
+https://github.com/user-attachments/assets/fbc9a979-26e9-4426-9b4b-0f0f46871f7b
 
-
+## Notes
 
 Config files are functions returning structs with explicit dependencies. Hardware params come from datasheets; FSW params are tuning knobs. See comments in each file for sources and units.
 
