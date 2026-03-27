@@ -63,7 +63,7 @@ soad/
     ├── koe2eci.m, ecef2eci.m
     └── greg2jd.m, gmst.m
 ```
-## Examples
+## Examples (VTS Visualization)
 
 1. Ground Target Tracking
 
